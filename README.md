@@ -16,6 +16,7 @@ it will make the duplicated code section as more as possible, and the compressti
 ```
 make demo
 ```
+![Demo screenshot](screenshot.jpg)
 
 ## Usage
 ```
