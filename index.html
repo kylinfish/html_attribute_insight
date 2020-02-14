@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <title>Demo HTML Tag Insight</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <style>
+            body {
+                background: #ffd89b;
+                background: -webkit-linear-gradient(to right, #ffd89b, #19547b);
+                background: linear-gradient(to top, #ffd89b, #19547b) fixed;
+                min-height: 100%;
+            }
+            .chart {
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="col-md-12 py-5 main-container">
+                <div class="row text-center text-white py-4">
+                    <div class="col-lg-9 mx-auto">
+                        <h1 class="display-4">HTML TAG INSIGHT</h1>
+                        <h3 class="text-white mb-3 lead">What HTML source do you want to analysis ?</h3>
+                        <p class="invisible text-warning mb-3" >Wait a moment ...</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 mx-auto">
+                        <form action="" method="post">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">URL</div>
+                                </div>
+                                <input type="text" class="form-control" name="url" placeholder="https://foo.com">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="chart" id="wordCloudDiv"></div>
+                <div class="chart" id="treeMap"></div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+        <script src="https://www.amcharts.com/lib/4/core.js"></script>
+        <script src="https://www.amcharts.com/lib/4/charts.js"></script>
+        <script src="https://www.amcharts.com/lib/4/plugins/wordCloud.js"></script>
+        <script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+        <script src="https://www.amcharts.com/lib/4/plugins/forceDirected.js"></script>
+        <script src="main.js"></script>
+    </body>
+</html>
