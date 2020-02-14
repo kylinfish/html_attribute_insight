@@ -2,6 +2,14 @@
 require(__DIR__ . "/src/html_parser_utils.php");
 require(__DIR__ . "/src/html_tag_insight.php");
 
+error_reporting(E_ERROR | E_PARSE);
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, PUT, POST, OPTIONS');
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+header('Access-Control-Max-Age: 3153600');
+
 
 function main($url)
 {
@@ -17,43 +25,55 @@ function main($url)
         $TAG_ATTR_VAL_DISTINCT_HASHMAP,
     ) = parseHtmlChunks($html_tag_string_chunks);
 
-
-    echo "\n----HTML TAG 統計------\n";
-    foreach ($TAG_ATTRS_HASHMAP as $html_tag => $attrs) {
-        echo sprintf("%15s - %3d\n", $html_tag, count($attrs));
+    $class_hashmap = [];
+    foreach ($CLASS_HASHMAP as $attr => $val) {
+        $class_hashmap[] = [
+            "tag" => $attr,
+            "count" => $val,
+        ];
     }
 
-    echo "\n----A TAG 值分佈--------\n";
-    foreach ($TAG_ATTRS_HASHMAP["div"] as $attr_name => $attr_val) {
-        echo sprintf("\5%s - %s\n", count($attr_val), $attr_name);
-        sort($attr_val);
-        foreach ($attr_val as $value) {
-            echo sprintf("\t|- %s\n", $value);
-        }
-    }
-
-    echo "\n----SRC TAG 值分佈------\n";
-    foreach ($SRC_HASHMAP as $html_tag => $num) {
-        echo sprintf("\5%s - %s\n", $num, $html_tag);
-    }
-
-    echo "\n---- 各個標籤屬性獨立統計 ------\n";
-    foreach ($TAG_ATTR_VAL_DISTINCT_HASHMAP as $html_tag => $attr) {
-        echo $html_tag . ":\n";
-        foreach ($attr as $attr_key => $attr_val) {
-            echo sprintf("    |- %s\n", $attr_key);
-            foreach (array_keys($attr_val) as $value) {
-                echo sprintf("        |- %s\n", $value);
+    $tag_attrs_hashmap = [];
+    foreach ($TAG_ATTRS_HASHMAP as $attr => $attr_list) {
+        $children = [];
+        foreach ($attr_list as $class => $attr_val) {
+            # filter most of tiny attributes;
+            if (count($attr_val) < 1)  {
+                continue;
             }
-        }
-    }
 
-    echo "\n---- Class 次數統計------\n";
-    foreach ($CLASS_HASHMAP as $class_name => $num) {
-        echo sprintf("%50s - %3d\n", $class_name, $num);
+            // Show attr values
+            $children_vals = [];
+            foreach ($attr_val as $val) {
+                $children_vals[] = [
+                    "name" => $val,
+                    "value" => 1,
+                ];
+            }
+
+            $children[] = [
+                "name" => $class,
+                "value" => count($attr_val),
+                "children" => $children_vals
+            ];
+        }
+        $tag_attrs_hashmap[] = [
+            "name" => $attr,
+            "children" => $children,
+        ];
     }
+    return [
+        "tag_attr_mapping" => $tag_attrs_hashmap,
+        "tag_name_mapping" => $TAG_NAME_HASHMAP,
+        "class_mapping" => $class_hashmap,
+        "src_mapping" => $SRC_HASHMAP,
+        "href_mapping" => $HREF_HASHMAP,
+        "tag_attr_val_distinct_mapping" => $TAG_ATTR_VAL_DISTINCT_HASHMAP,
+    ];
 }
 
 
-$url = $argv[1] ?? "https://github.com/";
-main($url);
+$url = json_decode(file_get_contents('php://input'), true);
+$result = main($url);
+
+echo json_encode($result);
